@@ -1,26 +1,86 @@
 <template>
   <div class="app" :class="{ 'sidebar-left-open': sidebarLeftOpen, 'sidebar-right-open': sidebarRightOpen }">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-left">
-        <button class="btn-icon" @click="toggleSidebarLeft" :title="sidebarLeftOpen ? '关闭作品栏' : '打开作品栏'">
+    <!-- Top Status Bar (Collapsible) -->
+    <header class="top-status-bar" :class="{ collapsed: topBarCollapsed }">
+      <div class="status-bar-content" v-show="!topBarCollapsed">
+        <div class="status-bar-left">
+          <button class="btn-icon" @click="toggleSidebarLeft" :title="sidebarLeftOpen ? '关闭作品栏' : '打开作品栏'">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          <h1 class="app-title">墨韵</h1>
+        </div>
+        
+        <div class="status-bar-center">
+          <div class="current-context" v-if="currentBook">
+            <span class="context-label">当前作品:</span>
+            <span class="context-value">{{ currentBook.name || '未命名作品' }}</span>
+            <span class="context-label" v-if="currentChapter"> / 章节:</span>
+            <span class="context-value" v-if="currentChapter">{{ currentChapter.title }}</span>
+          </div>
+        </div>
+        
+        <div class="status-bar-right">
+          <button class="btn btn-sm btn-secondary" @click="toggleBookSourcePanel" title="书源搜索">
+            <svg class="icon icon-sm" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            书源
+          </button>
+          <button class="btn btn-sm btn-secondary" @click="toggleUploadPanel" title="上传参考">
+            <svg class="icon icon-sm" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            上传
+          </button>
+          <button class="btn-icon" @click="toggleTopBar" title="折叠">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Collapsed State -->
+      <div class="status-bar-collapsed" v-show="topBarCollapsed" @click="toggleTopBar">
+        <button class="btn-icon" @click.stop="toggleSidebarLeft" :title="sidebarLeftOpen ? '关闭作品栏' : '打开作品栏'">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M3 12h18M3 6h18M3 18h18"/>
           </svg>
         </button>
-      </div>
-      <div class="header-center">
-        <h1 class="app-title">墨韵</h1>
-      </div>
-      <div class="header-right">
-        <button class="btn-icon" @click="toggleSidebarRight" :title="sidebarRightOpen ? '关闭设置' : '打开设置'">
+        <span class="collapsed-title">墨韵</span>
+        <button class="btn-icon" @click.stop="toggleTopBar" title="展开">
           <svg class="icon" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            <path d="m6 15 6-6 6 6"/>
           </svg>
         </button>
       </div>
     </header>
+    
+    <!-- Chapter Summary Module -->
+    <div class="chapter-summary-module" v-if="currentChapter && !topBarCollapsed">
+      <div class="summary-header">
+        <h3>当前章节摘要</h3>
+        <div class="summary-actions">
+          <button class="btn btn-sm btn-secondary" @click="generateSummary" :disabled="isGenerating">
+            自动生成摘要
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveSummary" v-if="summaryEditing">
+            确认
+          </button>
+        </div>
+      </div>
+      <textarea 
+        class="summary-textarea"
+        v-model="chapterSummary"
+        placeholder="章节摘要将作为后续生成的基础上下文..."
+        @focus="summaryEditing = true"
+      ></textarea>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -28,12 +88,22 @@
       <aside class="sidebar sidebar-left" :class="{ open: sidebarLeftOpen }">
         <div class="sidebar-header">
           <h2>作品</h2>
-          <button class="btn btn-sm btn-primary" @click="createNewBook">
-            <svg class="icon icon-sm" viewBox="0 0 24 24">
-              <path d="M12 5v14M5 12h14"/>
-            </svg>
-            新建
-          </button>
+          <div class="header-actions">
+            <button class="btn btn-sm btn-secondary" @click="createNewBook" title="新建作品">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              新建
+            </button>
+            <button class="btn btn-sm btn-primary" @click="createNewBookWithAiName" title="AI起名">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+              AI起名
+            </button>
+          </div>
         </div>
         <div class="sidebar-content">
           <div class="works-list">
@@ -317,6 +387,29 @@
                   </div>
                 </div>
 
+                <!-- Generation Mode Selection -->
+                <div class="generation-mode-selection">
+                  <div class="mode-label">生成模式:</div>
+                  <div class="mode-options">
+                    <label class="mode-option">
+                      <input type="radio" v-model="generationMode" value="new">
+                      <span class="mode-text">新建章节</span>
+                    </label>
+                    <label class="mode-option">
+                      <input type="radio" v-model="generationMode" value="continue">
+                      <span class="mode-text">继续生成</span>
+                    </label>
+                    <label class="mode-option">
+                      <input type="radio" v-model="generationMode" value="overwrite">
+                      <span class="mode-text">覆盖重写</span>
+                    </label>
+                  </div>
+                  <label class="preview-option">
+                    <input type="checkbox" v-model="addChapterPreview">
+                    <span>添加预告</span>
+                  </label>
+                </div>
+                
                 <!-- Input Area -->
                 <div class="input-area">
                   <div class="input-wrapper">
@@ -362,6 +455,30 @@
                       <input type="number" class="input" v-model="wordLimit" min="100" max="10000" step="100">
                     </div>
                   </div>
+                </div>
+                
+                <!-- Quick Command Buttons -->
+                <div class="quick-command-buttons">
+                  <button class="btn btn-sm btn-secondary" @click="generateNextChapter" :disabled="isGenerating">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    下一章
+                  </button>
+                  <button class="btn btn-sm btn-secondary" @click="generateFromOutline" :disabled="isGenerating">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                      <path d="M14 2v6h6"/>
+                    </svg>
+                    依大纲生成
+                  </button>
+                  <button class="btn btn-sm btn-secondary" @click="showPlotOutlineDialog" :disabled="isGenerating">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24">
+                      <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                    </svg>
+                    剧情梗概
+                  </button>
                 </div>
               </div>
             </div>
@@ -520,6 +637,38 @@
           </button>
         </div>
         <div class="sidebar-content">
+          <!-- Quick Action Buttons -->
+          <div class="quick-actions">
+            <button class="btn btn-sm btn-accent" @click="toggleHistoryPanel" title="历史记录">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              历史记录
+            </button>
+            <button class="btn btn-sm btn-accent" @click="toggleStylePanel" title="风格管理">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+              风格管理
+            </button>
+            <button class="btn btn-sm btn-accent" @click="toggleOutlinePanel" title="大纲管理">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <path d="M14 2v6h6"/>
+              </svg>
+              大纲管理
+            </button>
+            <button class="btn btn-sm btn-accent" @click="toggleSessionPanel" title="对话会话">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              </svg>
+              对话会话
+            </button>
+          </div>
+          
           <!-- API Settings -->
           <div class="settings-section">
             <h3>API 设置</h3>
@@ -779,6 +928,15 @@ const sidebarRightOpen = ref(false)
 const currentMode = ref('outline')
 const chaptersExpanded = ref(true)
 
+// Top Status Bar
+const topBarCollapsed = ref(false)
+const chapterSummary = ref('')
+const summaryEditing = ref(false)
+
+// Generation Mode
+const generationMode = ref('new')
+const addChapterPreview = ref(false)
+
 // Data
 const books = ref([])
 const currentBook = ref(null)
@@ -877,6 +1035,212 @@ function closeAllSidebars() {
   sidebarRightOpen.value = false
 }
 
+function toggleTopBar() {
+  topBarCollapsed.value = !topBarCollapsed.value
+}
+
+function toggleBookSourcePanel() {
+  currentMode.value = 'reference'
+  sidebarRightOpen.value = false
+}
+
+function toggleUploadPanel() {
+  currentMode.value = 'reference'
+  sidebarRightOpen.value = false
+}
+
+function toggleHistoryPanel() {
+  showToast('历史记录面板')
+}
+
+function toggleStylePanel() {
+  showToast('风格管理面板')
+}
+
+function toggleOutlinePanel() {
+  showToast('大纲管理面板')
+}
+
+function toggleSessionPanel() {
+  showToast('对话会话管理面板')
+}
+
+async function generateSummary() {
+  if (!currentChapter.value) {
+    showToast('请先选择一个章节', 'error')
+    return
+  }
+  
+  if (!currentChapter.value.content) {
+    showToast('当前章节无内容，无法生成摘要', 'error')
+    return
+  }
+  
+  isGenerating.value = true
+  
+  try {
+    const prompt = `请为以下小说章节内容生成一段简短的摘要（100-200字），概括本章的主要剧情和关键情节：
+
+${currentChapter.value.content}
+
+请直接输出摘要内容，不要有其他说明。`
+    
+    const response = await callAI([
+      { role: 'user', content: prompt }
+    ])
+    
+    chapterSummary.value = response
+    currentChapter.value.summary = response
+    saveData()
+    showToast('摘要生成成功', 'success')
+  } catch (error) {
+    showToast('生成摘要失败: ' + error.message, 'error')
+  } finally {
+    isGenerating.value = false
+  }
+}
+
+function saveSummary() {
+  if (currentChapter.value) {
+    currentChapter.value.summary = chapterSummary.value
+    saveData()
+    showToast('摘要已保存', 'success')
+  }
+  summaryEditing.value = false
+}
+
+async function generateNextChapter() {
+  if (!currentBook.value) {
+    showToast('请先选择或创建一个作品', 'error')
+    return
+  }
+  
+  if (!currentChapter.value?.content) {
+    showToast('当前章节无内容，无法生成下一章', 'error')
+    return
+  }
+  
+  createNewChapter()
+  
+  const lastContent = currentChapter.value?.content || ''
+  const summary = currentChapter.value?.summary || ''
+  
+  const prompt = `基于前文的结尾继续写下一章，承接之前的剧情，不重复已有内容。
+
+前文摘要：${summary}
+前文结尾：${lastContent.slice(-500)}
+
+写作要求：
+- 约6000-8000字
+- 承接前文，不重复
+- 章节末尾添加悬念钩子
+- 保持风格一致`
+
+  userInput.value = prompt
+  await sendMessage()
+}
+
+async function generateFromOutline() {
+  if (!currentBook.value?.outline) {
+    showToast('大纲为空，无法依大纲生成', 'error')
+    return
+  }
+  
+  if (!settings.apiKey || !settings.modelName) {
+    showToast('请先配置API设置', 'error')
+    sidebarRightOpen.value = true
+    return
+  }
+  
+  const chapterNum = (currentBook.value.chapters?.length || 0) + 1
+  
+  const prompt = `根据以下大纲生成本书第${chapterNum}章的完整内容：
+
+作品大纲：
+${currentBook.value.outline}
+
+${currentBook.value.characterSetting ? `人物设定：\n${currentBook.value.characterSetting}\n` : ''}
+${chapterSummary.value ? `当前章节摘要：\n${chapterSummary.value}\n` : ''}
+
+写作要求：
+- 约6000-8000字
+- 严格遵循大纲走向
+- 章节末尾添加悬念钩子
+${addChapterPreview.value ? '- 生成完成后添加100-200字的下章预告' : ''}
+- 注重细节描写，不要概括
+
+请直接输出小说正文内容。`
+
+  userInput.value = prompt
+  await sendMessage()
+}
+
+function showPlotOutlineDialog() {
+  showModal({
+    title: '生成剧情梗概',
+    type: 'input',
+    placeholder: '请输入未来的剧情走向或方向...',
+    inputValue: '',
+    onConfirm: async () => {
+      if (!modal.inputValue.trim()) {
+        showToast('请输入剧情走向', 'error')
+        return
+      }
+      
+      closeModal()
+      await generatePlotOutline(modal.inputValue.trim())
+    }
+  })
+}
+
+async function generatePlotOutline(futureDirection) {
+  if (!settings.apiKey || !settings.modelName) {
+    showToast('请先配置API设置', 'error')
+    sidebarRightOpen.value = true
+    return
+  }
+  
+  isGenerating.value = true
+  
+  try {
+    let existingContent = ''
+    currentBook.value?.chapters?.forEach(ch => {
+      existingContent += `\n【${ch.title}】\n${ch.content || ''}`
+    })
+    
+    const prompt = `基于以下信息生成一份故事梗概/剧情大纲：
+
+已有内容：
+${existingContent || '暂无内容'}
+
+用户期望的走向：
+${futureDirection}
+
+${currentBook.value?.characterSetting ? `人物设定：\n${currentBook.value.characterSetting}\n` : ''}
+
+请生成一份包含以下内容的详细梗概：
+1. 故事背景
+2. 主要人物
+3. 未来剧情走向
+4. 关键情节点
+5. 伏笔和悬念
+
+请用中文回答，格式清晰。`
+    
+    const response = await callAI([
+      { role: 'user', content: prompt }
+    ])
+    
+    currentBook.value.outline = response
+    saveData()
+    showToast('剧情梗概已生成并保存到大纲', 'success')
+  } catch (error) {
+    showToast('生成梗概失败: ' + error.message, 'error')
+  } finally {
+    isGenerating.value = false
+  }
+}
+
 function showToast(message, type = 'info') {
   toast.message = message
   toast.type = type
@@ -927,6 +1291,87 @@ function createNewBook() {
       closeModal()
     }
   })
+}
+
+function createNewBookWithAiName() {
+  const newBook = {
+    id: crypto.randomUUID(),
+    name: '',
+    outline: '',
+    characterSetting: '',
+    createdAt: new Date().toISOString(),
+    chapters: []
+  }
+  books.value.push(newBook)
+  currentBook.value = newBook
+  sidebarLeftOpen.value = false
+  saveData()
+  
+  showModal({
+    title: 'AI智能起名',
+    type: 'input',
+    placeholder: '请输入作品简介或方向（如：穿越、修仙、都市等）',
+    inputValue: '',
+    onConfirm: async () => {
+      if (!modal.inputValue.trim()) {
+        showToast('请输入作品简介或方向', 'error')
+        return
+      }
+      
+      closeModal()
+      await generateBookName(modal.inputValue.trim())
+    }
+  })
+}
+
+async function generateBookName(direction) {
+  if (!settings.apiKey || !settings.modelName) {
+    showToast('请先配置API设置', 'error')
+    sidebarRightOpen.value = true
+    return
+  }
+  
+  isGenerating.value = true
+  
+  try {
+    const prompt = `请为以下类型的小说生成5个书名推荐：
+
+类型/方向：${direction}
+
+要求：
+1. 书名要有吸引力，符合网络小说的风格
+2. 每个书名要独特，不重复
+3. 格式：一个书名一行，不要编号
+
+直接输出书名列表，不要其他说明。`
+    
+    const response = await callAI([
+      { role: 'user', content: prompt }
+    ])
+    
+    const names = response.split('\n').filter(n => n.trim())
+    
+    showModal({
+      title: '选择书名',
+      type: 'info',
+      message: '推荐书名：\n\n' + names.map((name, i) => `${i + 1}. ${name}`).join('\n'),
+      inputValue: names[0] || '',
+      placeholder: '或直接输入书名',
+      onConfirm: () => {
+        const selectedName = modal.inputValue.trim() || names[0]
+        if (selectedName) {
+          currentBook.value.name = selectedName
+          saveData()
+          showToast('作品已创建: ' + selectedName, 'success')
+        }
+        closeModal()
+      }
+    })
+  } catch (error) {
+    showToast('生成书名失败: ' + error.message, 'error')
+  } finally {
+    isGenerating.value = false
+  }
 }
 
 function selectBook(book) {
@@ -1055,6 +1500,16 @@ async function sendMessage() {
     return
   }
   
+  if (generationMode.value === 'continue' && !currentChapter.value.content) {
+    showToast('当前章节无内容，请选择「新建章节」模式', 'error')
+    return
+  }
+  
+  if (generationMode.value === 'overwrite' && !currentChapter.value.content) {
+    showToast('当前章节无内容，请选择「新建章节」模式', 'error')
+    return
+  }
+  
   const userMessage = {
     role: 'user',
     content: userInput.value.trim(),
@@ -1076,26 +1531,74 @@ async function sendMessage() {
 async function generateAIResponse(context) {
   isGenerating.value = true
   
+  if (generationMode.value === 'overwrite') {
+    currentChapter.value.content = ''
+    currentChapter.value.messages = currentChapter.value.messages.filter(m => m.role === 'user')
+  }
+  
   const messages = buildMessages(context)
   
   try {
     const response = await callAI(messages)
     
+    let finalContent = response
+    
+    if (addChapterPreview.value) {
+      const previewResponse = await generateChapterPreview()
+      finalContent += '\n\n【下章预告】\n' + previewResponse
+    }
+    
     const aiMessage = {
       role: 'assistant',
-      content: response,
+      content: finalContent,
       thinking: null,
       thinkingExpanded: false,
       timestamp: Date.now()
     }
     
     currentChapter.value.messages.push(aiMessage)
+    
+    if (generationMode.value === 'continue') {
+      if (currentChapter.value.content) {
+        currentChapter.value.content += '\n\n' + response
+      } else {
+        currentChapter.value.content = response
+      }
+    } else {
+      if (currentChapter.value.content) {
+        currentChapter.value.content += '\n\n' + response
+      } else {
+        currentChapter.value.content = response
+      }
+    }
+    
+    currentChapter.value.wordCount = currentChapter.value.content.replace(/\s/g, '').length
+    
     saveData()
   } catch (error) {
     showToast('生成失败: ' + error.message, 'error')
     currentChapter.value.messages.pop()
   } finally {
     isGenerating.value = false
+  }
+}
+
+async function generateChapterPreview() {
+  try {
+    const prompt = `根据以下剧情生成一段简短的下章预告（100-200字）：
+
+${currentChapter.value.content || ''}
+
+请直接输出预告内容，不要有其他说明。`
+    
+    const response = await callAI([
+      { role: 'user', content: prompt }
+    ])
+    
+    return response
+  } catch (error) {
+    console.error('生成预告失败:', error)
+    return ''
   }
 }
 
@@ -1699,6 +2202,13 @@ onMounted(() => {
       showModelList.value = false
     }
   })
+  
+  watch(currentChapter, (newChapter) => {
+    if (newChapter) {
+      chapterSummary.value = newChapter.summary || ''
+      summaryEditing.value = false
+    }
+  }, { immediate: true })
 })
 
 watch(books, saveData, { deep: true })
@@ -1711,6 +2221,123 @@ watch(books, saveData, { deep: true })
   flex-direction: column;
   background: var(--bg-primary);
   overflow: hidden;
+}
+
+/* Top Status Bar */
+.top-status-bar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  transition: height var(--transition-slow);
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.top-status-bar.collapsed {
+  height: 50px;
+}
+
+.status-bar-content {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.status-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-bar-center {
+  flex: 1;
+  text-align: center;
+}
+
+.current-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.context-label {
+  color: var(--text-muted);
+}
+
+.context-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-bar-collapsed {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.collapsed-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 2px;
+}
+
+/* Chapter Summary Module */
+.chapter-summary-module {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  flex-shrink: 0;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.summary-header h3 {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.summary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.summary-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  line-height: 1.8;
+  resize: vertical;
+  transition: all var(--transition-fast);
+}
+
+.summary-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.1);
 }
 
 /* Header */
@@ -1792,6 +2419,11 @@ watch(books, saveData, { deep: true })
   font-size: 18px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
@@ -1851,6 +2483,22 @@ watch(books, saveData, { deep: true })
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.quick-actions .btn {
+  font-size: 13px;
+  padding: 8px 12px;
 }
 
 .password-input {
@@ -2178,6 +2826,76 @@ watch(books, saveData, { deep: true })
 .chapter-stats {
   font-size: 13px;
   color: var(--text-muted);
+}
+
+/* Generation Mode Selection */
+.generation-mode-selection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.mode-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.mode-options {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.mode-option input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+.mode-text {
+  white-space: nowrap;
+}
+
+.preview-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.preview-option input[type="checkbox"] {
+  accent-color: var(--primary);
+}
+
+/* Quick Command Buttons */
+.quick-command-buttons {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.quick-command-buttons .btn {
+  flex: 1;
+  min-width: 120px;
 }
 
 /* Chat Messages */
