@@ -240,48 +240,48 @@ export const ConfigPanel: React.FC = () => {
   };
 
   return (
-    <div className="h-full bg-paper-50 border-l border-wood-200 flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-wood-200">
-        <h2 className="text-lg font-display font-semibold text-wood-900 flex items-center gap-2">
-          <Settings size={20} />
+    <div className="h-full bg-paper-50 border-l border-ink-200 flex flex-col">
+      <div className="flex items-center justify-between p-3 md:p-4 border-b border-ink-200">
+        <h2 className="text-sm md:text-lg font-display font-semibold text-ink-900 flex items-center gap-2">
+          <Settings size={18} md:size={20} />
           AI配置中心
         </h2>
         <button
           onClick={() => setRightSidebarOpen(false)}
-          className="p-2 hover:bg-wood-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-ink-100 rounded-lg transition-colors"
         >
-          <X size={20} className="text-wood-600" />
+          <X size={18} md:size={20} className="text-ink-600" />
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-wood-200">
+      <div className="flex border-b border-ink-200">
         <button
           onClick={() => setActiveTab('model')}
-          className={`flex-1 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 py-2 md:py-3 text-xs md:text-sm font-medium transition-colors ${
             activeTab === 'model'
-              ? 'bg-amber-50 text-amber-800 border-b-2 border-amber-500'
-              : 'text-wood-600 hover:bg-wood-50'
+              ? 'bg-minghuang-50 text-minghuang-700 border-b-2 border-minghuang-500'
+              : 'text-ink-600 hover:bg-ink-50'
           }`}
         >
           模型
         </button>
         <button
           onClick={() => setActiveTab('params')}
-          className={`flex-1 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 py-2 md:py-3 text-xs md:text-sm font-medium transition-colors ${
             activeTab === 'params'
-              ? 'bg-amber-50 text-amber-800 border-b-2 border-amber-500'
-              : 'text-wood-600 hover:bg-wood-50'
+              ? 'bg-minghuang-50 text-minghuang-700 border-b-2 border-minghuang-500'
+              : 'text-ink-600 hover:bg-ink-50'
           }`}
         >
           参数
         </button>
         <button
           onClick={() => setActiveTab('preset')}
-          className={`flex-1 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 py-2 md:py-3 text-xs md:text-sm font-medium transition-colors ${
             activeTab === 'preset'
-              ? 'bg-amber-50 text-amber-800 border-b-2 border-amber-500'
-              : 'text-wood-600 hover:bg-wood-50'
+              ? 'bg-minghuang-50 text-minghuang-700 border-b-2 border-minghuang-500'
+              : 'text-ink-600 hover:bg-ink-50'
           }`}
         >
           预设
@@ -289,16 +289,16 @@ export const ConfigPanel: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-3 md:p-4">
         {activeTab === 'model' && (
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {modelConfigs.length === 0 ? (
-              <div className="text-center py-8 text-wood-500">
-                <Settings size={48} className="mx-auto mb-3 opacity-50" />
-                <p>还没有模型配置</p>
+              <div className="text-center py-6 md:py-8 text-ink-500">
+                <Settings size={40} md:size={48} className="mx-auto mb-3 opacity-50" />
+                <p className="text-sm">还没有模型配置</p>
                 <button
                   onClick={() => setShowAddConfigModal(true)}
-                  className="mt-4 btn-amber"
+                  className="mt-3 btn-minghuang text-sm"
                 >
                   添加配置
                 </button>
@@ -308,46 +308,46 @@ export const ConfigPanel: React.FC = () => {
                 {modelConfigs.map(config => (
                   <div
                     key={config.id}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-3 md:p-4 rounded-xl border-2 transition-all ${
                       settings.activeModelConfigId === config.id
-                        ? 'border-amber-400 bg-amber-50'
-                        : 'border-wood-200 bg-white hover:border-wood-300'
+                        ? 'border-minghuang-400 bg-minghuang-50'
+                        : 'border-ink-200 bg-white hover:border-ink-300'
                     }`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           {settings.activeModelConfigId === config.id && (
-                            <Check size={16} className="text-amber-600" />
+                            <Check size={14} md:size={16} className="text-minghuang-600" />
                           )}
-                          <span className="font-medium text-wood-900">{config.name}</span>
+                          <span className="font-medium text-ink-900 truncate">{config.name}</span>
                         </div>
-                        <p className="text-sm text-wood-600 mt-1">
+                        <p className="text-xs md:text-sm text-ink-600 mt-1">
                           {PROVIDERS.find(p => p.value === config.provider)?.label} · {config.model}
                         </p>
-                        <p className="text-xs text-wood-500">
+                        <p className="text-xs text-ink-500">
                           预设: {presets.find(p => p.id === config.presetId)?.name || '无'}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 md:gap-2">
                         <button
                           onClick={() => handleSelectConfig(config.id)}
                           disabled={settings.activeModelConfigId === config.id}
-                          className="text-sm px-3 py-1.5 bg-wood-100 text-wood-700 rounded-lg hover:bg-wood-200 transition-colors disabled:opacity-50"
+                          className="text-xs md:text-sm px-2 md:px-3 py-1 md:py-1.5 bg-ink-100 text-ink-700 rounded-lg hover:bg-ink-200 transition-colors disabled:opacity-50"
                         >
                           {settings.activeModelConfigId === config.id ? '当前' : '使用'}
                         </button>
                         <button
                           onClick={() => handleOpenEditModal(config)}
-                          className="p-2 hover:bg-wood-100 rounded-lg transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-ink-100 rounded-lg transition-colors"
                         >
-                          <Settings size={16} className="text-wood-600" />
+                          <Settings size={14} md:size={16} className="text-ink-600" />
                         </button>
                         <button
                           onClick={() => handleDeleteConfig(config.id)}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 md:p-2 hover:bg-red-50 rounded-lg transition-colors"
                         >
-                          <Trash2 size={16} className="text-red-500" />
+                          <Trash2 size={14} md:size={16} className="text-red-500" />
                         </button>
                       </div>
                     </div>
@@ -355,9 +355,9 @@ export const ConfigPanel: React.FC = () => {
                 ))}
                 <button
                   onClick={() => setShowAddConfigModal(true)}
-                  className="w-full py-3 border-2 border-dashed border-wood-300 rounded-xl text-wood-600 hover:border-amber-400 hover:text-amber-600 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-2 md:py-3 border-2 border-dashed border-ink-300 rounded-xl text-ink-600 hover:border-minghuang-400 hover:text-minghuang-600 transition-colors flex items-center justify-center gap-2"
                 >
-                  <Plus size={18} />
+                  <Plus size={16} md:size={18} />
                   添加新配置
                 </button>
               </>
@@ -366,30 +366,30 @@ export const ConfigPanel: React.FC = () => {
         )}
 
         {activeTab === 'params' && (
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {!currentConfig ? (
-              <div className="text-center py-8 text-wood-500">
-                <Settings size={48} className="mx-auto mb-3 opacity-50" />
-                <p>请先选择一个模型配置</p>
+              <div className="text-center py-6 md:py-8 text-ink-500">
+                <Settings size={40} md:size={48} className="mx-auto mb-3 opacity-50" />
+                <p className="text-sm">请先选择一个模型配置</p>
               </div>
             ) : (
               <>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-wood-700">当前: {currentConfig.name}</span>
+                  <span className="text-xs md:text-sm font-medium text-ink-700">当前: {currentConfig.name}</span>
                   <button
                     onClick={handleResetParams}
-                    className="flex items-center gap-1 text-sm text-wood-600 hover:text-wood-800"
+                    className="flex items-center gap-1 text-xs md:text-sm text-ink-600 hover:text-ink-800"
                   >
-                    <RotateCcw size={14} />
+                    <RotateCcw size={12} md:size={14} />
                     重置
                   </button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-sm text-wood-600">温度 (Temperature)</label>
-                      <span className="text-sm text-wood-500">{currentConfig.temperature}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs md:text-sm text-ink-600">温度 (Temperature)</label>
+                      <span className="text-xs md:text-sm text-ink-500">{currentConfig.temperature}</span>
                     </div>
                     <input
                       type="range"
@@ -398,15 +398,15 @@ export const ConfigPanel: React.FC = () => {
                       step="0.1"
                       value={currentConfig.temperature}
                       onChange={(e) => handleParamChange('temperature', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-wood-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="w-full h-2 bg-ink-200 rounded-lg appearance-none cursor-pointer accent-minghuang-500"
                     />
-                    <p className="text-xs text-wood-500 mt-1">越高越有创意/随机，越低越保守稳定。推荐创作: 0.8-1.2</p>
+                    <p className="text-xs text-ink-500 mt-1">越高越有创意/随机，越低越保守稳定。推荐创作: 0.8-1.2</p>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-sm text-wood-600">Top P (核采样)</label>
-                      <span className="text-sm text-wood-500">{currentConfig.topP}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs md:text-sm text-ink-600">Top P (核采样)</label>
+                      <span className="text-xs md:text-sm text-ink-500">{currentConfig.topP}</span>
                     </div>
                     <input
                       type="range"
@@ -415,15 +415,15 @@ export const ConfigPanel: React.FC = () => {
                       step="0.05"
                       value={currentConfig.topP}
                       onChange={(e) => handleParamChange('topP', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-wood-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="w-full h-2 bg-ink-200 rounded-lg appearance-none cursor-pointer accent-minghuang-500"
                     />
-                    <p className="text-xs text-wood-500 mt-1">限制候选词范围。推荐与温度二选一调节，默认1.0</p>
+                    <p className="text-xs text-ink-500 mt-1">限制候选词范围。推荐与温度二选一调节，默认1.0</p>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-sm text-wood-600">频率惩罚 (Frequency Penalty)</label>
-                      <span className="text-sm text-wood-500">{currentConfig.frequencyPenalty}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs md:text-sm text-ink-600">频率惩罚 (Frequency Penalty)</label>
+                      <span className="text-xs md:text-sm text-ink-500">{currentConfig.frequencyPenalty}</span>
                     </div>
                     <input
                       type="range"
@@ -432,15 +432,15 @@ export const ConfigPanel: React.FC = () => {
                       step="0.1"
                       value={currentConfig.frequencyPenalty}
                       onChange={(e) => handleParamChange('frequencyPenalty', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-wood-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="w-full h-2 bg-ink-200 rounded-lg appearance-none cursor-pointer accent-minghuang-500"
                     />
-                    <p className="text-xs text-wood-500 mt-1">正值降低词汇重复频率。推荐小说创作: 0.3-1.0</p>
+                    <p className="text-xs text-ink-500 mt-1">正值降低词汇重复频率。推荐小说创作: 0.3-1.0</p>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-sm text-wood-600">存在惩罚 (Presence Penalty)</label>
-                      <span className="text-sm text-wood-500">{currentConfig.presencePenalty}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs md:text-sm text-ink-600">存在惩罚 (Presence Penalty)</label>
+                      <span className="text-xs md:text-sm text-ink-500">{currentConfig.presencePenalty}</span>
                     </div>
                     <input
                       type="range"
@@ -449,37 +449,37 @@ export const ConfigPanel: React.FC = () => {
                       step="0.1"
                       value={currentConfig.presencePenalty}
                       onChange={(e) => handleParamChange('presencePenalty', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-wood-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="w-full h-2 bg-ink-200 rounded-lg appearance-none cursor-pointer accent-minghuang-500"
                     />
-                    <p className="text-xs text-wood-500 mt-1">正值鼓励引入新话题。推荐: 0-0.5</p>
+                    <p className="text-xs text-ink-500 mt-1">正值鼓励引入新话题。推荐: 0-0.5</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-wood-200">
+                <div className="space-y-3 pt-3 border-t border-ink-200">
                   <div>
-                    <label className="block text-sm text-wood-600 mb-2">单次最大输出 Token</label>
+                    <label className="block text-xs md:text-sm text-ink-600 mb-1.5">单次最大输出 Token</label>
                     <input
                       type="number"
                       value={currentConfig.maxTokens}
                       onChange={(e) => handleParamChange('maxTokens', parseInt(e.target.value) || 0)}
-                      className="w-full input-field"
+                      className="w-full input-field text-sm"
                     />
-                    <p className="text-xs text-wood-500 mt-1">控制每次AI回复的最长长度</p>
+                    <p className="text-xs text-ink-500 mt-1">控制每次AI回复的最长长度</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm text-wood-600 mb-2">单次最小输出 Token</label>
+                    <label className="block text-xs md:text-sm text-ink-600 mb-1.5">单次最小输出 Token</label>
                     <input
                       type="number"
                       value={currentConfig.minTokens}
                       onChange={(e) => handleParamChange('minTokens', parseInt(e.target.value) || 0)}
-                      className="w-full input-field"
+                      className="w-full input-field text-sm"
                     />
-                    <p className="text-xs text-wood-500 mt-1">强制AI至少输出这么多Token (0=不限制)</p>
+                    <p className="text-xs text-ink-500 mt-1">强制AI至少输出这么多Token (0=不限制)</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm text-wood-600 mb-2">上下文最大 Token</label>
+                    <label className="block text-xs md:text-sm text-ink-600 mb-1.5">上下文最大 Token</label>
                     <input
                       type="number"
                       value={currentConfig.maxContextTokens}

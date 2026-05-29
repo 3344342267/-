@@ -453,44 +453,47 @@ export const ChatInterface: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col bg-paper-100">
-      {/* Header */}
-      <div className="border-b border-ink-200 px-4 bg-white/80 backdrop-blur-md">
-        <div className="flex items-center justify-between max-w-4xl mx-auto h-14">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-display font-semibold text-ink-900">
+      {/* Header - Mobile responsive */}
+      <div className="border-b border-ink-200 px-3 md:px-4 bg-white/80 backdrop-blur-md">
+        <div className="flex items-center justify-between max-w-4xl mx-auto h-12 md:h-14">
+          <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+            <h1 className="text-base md:text-xl font-display font-semibold text-ink-900 truncate">
               {currentBook?.title || '小说助手'}
             </h1>
             {currentChapter && (
               <>
-                <span className="text-ink-400">·</span>
-                <h2 className="text-lg font-display text-ink-700">
+                <span className="hidden sm:inline text-ink-400">·</span>
+                <h2 className="text-sm md:text-lg font-display text-ink-700 hidden sm:block">
                   {currentChapter.title}
                 </h2>
               </>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             <button
               onClick={handleSummarizeOutline}
               disabled={!currentBook}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1 text-xs md:text-sm px-2 md:px-3 py-1 md:py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors disabled:opacity-50"
+              title="大纲总结"
             >
-              <BookText size={16} />
-              大纲总结
+              <BookText size={14} md:size={16} />
+              <span className="hidden sm:inline">大纲</span>
             </button>
             <button
               onClick={() => setShowBookReader(true)}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors"
+              className="flex items-center gap-1 text-xs md:text-sm px-2 md:px-3 py-1 md:py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors"
+              title="阅读模式"
             >
-              <BookOpen size={16} />
-              阅读
+              <BookOpen size={14} md:size={16} />
+              <span className="hidden sm:inline">阅读</span>
             </button>
             <button
               onClick={handleDownloadBook}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-yexing-50 text-yexing-700 rounded-lg hover:bg-yexing-100 transition-colors"
+              className="flex items-center gap-1 text-xs md:text-sm px-2 md:px-3 py-1 md:py-1.5 bg-yexing-50 text-yexing-700 rounded-lg hover:bg-yexing-100 transition-colors"
+              title="下载书籍"
             >
-              <Download size={16} />
-              下载
+              <Download size={14} md:size={16} />
+              <span className="hidden sm:inline">下载</span>
             </button>
           </div>
         </div>
@@ -760,14 +763,14 @@ export const ChatInterface: React.FC = () => {
         </div>
       )}
 
-      {/* Input Area */}
-      <div className="border-t border-ink-200 bg-white/80 backdrop-blur-md p-4">
-        <div className="max-w-4xl mx-auto space-y-3">
-          {/* Upload Options */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <label className="flex items-center gap-1.5 px-3 py-2 text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
-              <Upload size={16} />
-              <span>上传文件</span>
+      {/* Input Area - Mobile responsive */}
+      <div className="border-t border-ink-200 bg-white/80 backdrop-blur-md p-3 md:p-4">
+        <div className="max-w-4xl mx-auto space-y-2 md:space-y-3">
+          {/* Upload Options - Mobile first */}
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+            <label className="flex items-center gap-1 px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
+              <Upload size={14} md:size={16} />
+              <span className="hidden sm:inline">上传文件</span>
               <input
                 type="file"
                 onChange={handleFileUpload}
@@ -776,9 +779,9 @@ export const ChatInterface: React.FC = () => {
                 accept=".txt,.md"
               />
             </label>
-            <label className="flex items-center gap-1.5 px-3 py-2 text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
-              <Image size={16} />
-              <span>上传图片</span>
+            <label className="flex items-center gap-1 px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
+              <Image size={14} md:size={16} />
+              <span className="hidden sm:inline">上传图片</span>
               <input
                 type="file"
                 onChange={handleImageUpload}
@@ -787,29 +790,30 @@ export const ChatInterface: React.FC = () => {
                 accept="image/*"
               />
             </label>
-            <div className="flex items-center gap-2 flex-1 max-w-xs">
+            <div className="flex items-center gap-1.5 flex-1 min-w-[160px] max-w-xs">
               <input
                 type="text"
                 value={learnUrl}
                 onChange={(e) => setLearnUrl(e.target.value)}
-                placeholder="输入链接学习风格..."
-                className="input-field text-sm flex-1"
+                placeholder="链接学习风格..."
+                className="input-field text-xs md:text-sm flex-1"
               />
               <button
                 onClick={handleLearnStyle}
                 disabled={!learnUrl.trim()}
-                className="p-2 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400 transition-colors disabled:opacity-50"
+                className="p-1.5 md:p-2 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400 transition-colors disabled:opacity-50"
                 title="学习链接内容风格"
               >
-                <Link2 size={16} />
+                <Link2 size={14} md:size={16} />
               </button>
             </div>
             <button
               onClick={handleQuickImprove}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm bg-yexing-500 text-white rounded-lg hover:bg-yexing-400 transition-colors"
+              className="flex items-center gap-1 px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm bg-yexing-500 text-white rounded-lg hover:bg-yexing-400 transition-colors"
+              title="完善想法"
             >
-              <Sparkles size={16} />
-              一键完善
+              <Sparkles size={14} md:size={16} />
+              <span className="hidden sm:inline">完善</span>
             </button>
           </div>
 
@@ -817,11 +821,11 @@ export const ChatInterface: React.FC = () => {
           {fileUploads.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {fileUploads.map((file, index) => (
-                <div key={index} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-ink-50 rounded-lg text-sm">
-                  <BookOpen size={14} className="text-ink-500" />
-                  <span className="text-ink-600 truncate max-w-32">{file.name}</span>
+                <div key={index} className="flex items-center gap-1 px-2 py-1 bg-ink-50 rounded-lg text-xs md:text-sm">
+                  <BookOpen size={12} md:size={14} className="text-ink-500" />
+                  <span className="text-ink-600 truncate max-w-24 md:max-w-32">{file.name}</span>
                   <button onClick={() => setFileUploads(prev => prev.filter((_, i) => i !== index))} className="text-red-400 hover:text-red-500">
-                    <X size={14} />
+                    <X size={12} md:size={14} />
                   </button>
                 </div>
               ))}
@@ -829,68 +833,68 @@ export const ChatInterface: React.FC = () => {
           )}
 
           {/* Main Input */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 md:gap-3">
             {/* Options */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2 md:gap-3">
                 <select
                   value={generateMode}
                   onChange={(e) => setGenerateMode(e.target.value as any)}
-                  className="input-field text-sm px-3 py-2"
+                  className="input-field text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2"
                 >
-                  <option value="continue">续写当前章节</option>
-                  <option value="new">新生成内容</option>
-                  <option value="chapter">创作新章节</option>
+                  <option value="continue">续写</option>
+                  <option value="new">新生成</option>
+                  <option value="chapter">新章节</option>
                 </select>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-ink-500">字数:</span>
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <span className="text-xs md:text-sm text-ink-500">字数:</span>
                   <input
                     type="number"
                     value={wordCount}
                     onChange={(e) => setWordCount(e.target.value)}
                     placeholder="8000"
-                    className="input-field text-sm px-3 py-2 w-24"
+                    className="input-field text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2 w-16 md:w-24"
                   />
                 </div>
               </div>
               {!apiSettings.apiKey && (
-                <div className="flex items-center gap-1.5 text-sm text-yexing-600">
-                  <AlertCircle size={14} />
-                  <span>请先配置API密钥</span>
+                <div className="flex items-center gap-1 text-xs md:text-sm text-yexing-600">
+                  <AlertCircle size={12} md:size={14} />
+                  <span>请配置API密钥</span>
                 </div>
               )}
             </div>
             
             {/* Text Input */}
-            <div className="flex items-end gap-3">
+            <div className="flex items-end gap-2 md:gap-3">
               <div className="flex-1">
                 <textarea
                   ref={inputRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="输入您的创作指令...\n\n例如：请写一段武侠小说的开篇，主角是一名隐退的杀手"
+                  placeholder="输入创作指令..."
                   className="w-full input-field resize-none focus:ring-2 focus:ring-minghuang-300"
                   rows={1}
-                  style={{ minHeight: '60px', maxHeight: '300px' }}
+                  style={{ minHeight: '56px', maxHeight: '250px' }}
                   disabled={isGenerating}
                 />
               </div>
               {isGenerating ? (
                 <button
                   onClick={handleStop}
-                  className="btn-yexing flex items-center gap-2 px-6"
+                  className="btn-yexing flex items-center gap-1 px-3 md:px-6 py-2"
                 >
-                  <Square size={18} fill="currentColor" />
-                  暂停
+                  <Square size={16} md:size={18} fill="currentColor" />
+                  <span className="text-xs md:text-sm">暂停</span>
                 </button>
               ) : (
                 <button
                   onClick={handleGenerate}
                   disabled={!userInput.trim() || !apiSettings.apiKey || !apiSettings.model}
-                  className="btn-minghuang flex items-center gap-2 px-6"
+                  className="btn-minghuang flex items-center gap-1 px-3 md:px-6 py-2"
                 >
-                  <Send size={18} />
-                  生成
+                  <Send size={16} md:size={18} />
+                  <span className="text-xs md:text-sm">生成</span>
                 </button>
               )}
             </div>
