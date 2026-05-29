@@ -11,6 +11,7 @@ import {
   ChevronDown, 
   ChevronUp,
   ChevronLeft,
+  ChevronRight,
   Check,
   BookOpen,
   Edit2,
@@ -19,9 +20,9 @@ import {
   Pencil,
   Plus,
   ArrowLeft,
-  ChevronRight,
   BookText,
-  AlertCircle
+  AlertCircle,
+  X
 } from 'lucide-react';
 import { useStore } from '../store';
 import { streamCompletion } from '../utils/api';
@@ -451,18 +452,18 @@ export const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-paper-50">
+    <div className="h-full flex flex-col bg-paper-100">
       {/* Header */}
-      <div className="border-b border-wood-200 p-4 bg-white/50">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
+      <div className="border-b border-ink-200 px-4 bg-white/80 backdrop-blur-md">
+        <div className="flex items-center justify-between max-w-4xl mx-auto h-14">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-display font-semibold text-wood-900">
+            <h1 className="text-xl font-display font-semibold text-ink-900">
               {currentBook?.title || '小说助手'}
             </h1>
             {currentChapter && (
               <>
-                <span className="text-wood-500">·</span>
-                <h2 className="text-lg font-display text-wood-700">
+                <span className="text-ink-400">·</span>
+                <h2 className="text-lg font-display text-ink-700">
                   {currentChapter.title}
                 </h2>
               </>
@@ -472,21 +473,21 @@ export const ChatInterface: React.FC = () => {
             <button
               onClick={handleSummarizeOutline}
               disabled={!currentBook}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-wood-100 text-wood-700 rounded-lg hover:bg-wood-200 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors disabled:opacity-50"
             >
               <BookText size={16} />
               大纲总结
             </button>
             <button
               onClick={() => setShowBookReader(true)}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-wood-100 text-wood-700 rounded-lg hover:bg-wood-200 transition-colors"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-minghuang-50 text-minghuang-700 rounded-lg hover:bg-minghuang-100 transition-colors"
             >
               <BookOpen size={16} />
               阅读
             </button>
             <button
               onClick={handleDownloadBook}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-yexing-50 text-yexing-700 rounded-lg hover:bg-yexing-100 transition-colors"
             >
               <Download size={16} />
               下载
@@ -499,9 +500,9 @@ export const ChatInterface: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
         <div className="max-w-4xl mx-auto">
           {chapterHistory.length === 0 ? (
-            <div className="text-center py-16 text-wood-500">
+            <div className="text-center py-16 text-ink-400">
               <Sparkles size={48} className="mx-auto mb-4 opacity-50" />
-              <p>开始您的创作之旅</p>
+              <p className="text-lg font-display">开始您的创作之旅</p>
               <p className="text-sm mt-2">输入指令，让AI帮您创作小说</p>
             </div>
           ) : (
@@ -512,18 +513,18 @@ export const ChatInterface: React.FC = () => {
                   <button
                     onClick={() => setCurrentViewIndex(prev => Math.max(0, prev - 10))}
                     disabled={currentViewIndex === 0}
-                    className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                    className="flex items-center gap-1 text-sm text-minghuang-600 hover:text-minghuang-700 disabled:opacity-50"
                   >
                     <ChevronLeft size={16} />
                     上一页
                   </button>
-                  <span className="text-sm text-wood-500">
+                  <span className="text-sm text-ink-400">
                     显示 {currentViewIndex + 1} - {Math.min(currentViewIndex + 10, chapterHistory.length)} 条
                   </span>
                   <button
                     onClick={() => setCurrentViewIndex(prev => Math.min(prev + 10, chapterHistory.length - 1))}
                     disabled={currentViewIndex >= chapterHistory.length - 10}
-                    className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                    className="flex items-center gap-1 text-sm text-minghuang-600 hover:text-minghuang-700 disabled:opacity-50"
                   >
                     下一页
                     <ChevronRight size={16} />
@@ -543,20 +544,22 @@ export const ChatInterface: React.FC = () => {
                   <div
                     key={item.id}
                     data-message-id={item.id}
-                    className={`flex gap-3 p-4 rounded-2xl ${
-                      item.role === 'user' ? 'bg-amber-50 ml-auto' : 'bg-white border border-wood-200 shadow-paper'
+                    className={`flex gap-3 p-4 rounded-2xl transition-all ${
+                      item.role === 'user' 
+                        ? 'bg-minghuang-500 text-ink-950 ml-auto' 
+                        : 'bg-white border border-ink-100 shadow-paper'
                     }`}
                     style={{ maxWidth: '85%' }}
                     onMouseEnter={() => toggleActions(item.id)}
                     onMouseLeave={() => toggleActions(item.id)}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      item.role === 'user' ? 'bg-amber-200' : 'bg-wood-200'
+                      item.role === 'user' ? 'bg-minghuang-400' : 'bg-yexing-100'
                     }`}>
                       {item.role === 'user' ? (
-                        <span className="text-amber-800 font-medium">您</span>
+                        <span className="text-ink-800 font-medium">您</span>
                       ) : (
-                        <Sparkles size={18} className="text-wood-600" />
+                        <Sparkles size={18} className="text-yexing-600" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -564,13 +567,13 @@ export const ChatInterface: React.FC = () => {
                         <div className="mb-3">
                           <button
                             onClick={() => toggleThinking(item.id)}
-                            className="flex items-center gap-1 text-xs text-wood-500 hover:text-wood-700"
+                            className="flex items-center gap-1 text-xs text-ink-400 hover:text-ink-600"
                           >
                             {expandedThinking.has(item.id) ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
                             思考过程
                           </button>
                           {expandedThinking.has(item.id) && (
-                            <div className="text-sm text-wood-600 bg-wood-50 p-3 rounded-xl italic mt-1 whitespace-pre-wrap">
+                            <div className="text-sm text-ink-600 bg-paper-200 p-3 rounded-xl italic mt-1 whitespace-pre-wrap">
                               {item.thinking}
                             </div>
                           )}
@@ -587,13 +590,13 @@ export const ChatInterface: React.FC = () => {
                           <div className="flex gap-2">
                             <button
                               onClick={() => { setEditingMessageId(null); setEditingContent(''); }}
-                              className="text-sm px-3 py-1.5 bg-wood-100 text-wood-700 rounded-lg"
+                              className="text-sm px-3 py-1.5 bg-ink-100 text-ink-600 rounded-lg hover:bg-ink-200"
                             >
                               取消
                             </button>
                             <button
                               onClick={() => handleSaveEdit(item.id)}
-                              className="text-sm px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg"
+                              className="text-sm px-3 py-1.5 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400"
                             >
                               保存
                             </button>
@@ -601,13 +604,13 @@ export const ChatInterface: React.FC = () => {
                         </div>
                       ) : (
                         <>
-                          <div className="text-wood-800 whitespace-pre-wrap font-serif leading-relaxed">
+                          <div className="text-ink-800 whitespace-pre-wrap font-serif leading-relaxed">
                             {displayContent}
                           </div>
                           {isLong && (
                             <button
                               onClick={() => toggleExpand(item.id)}
-                              className="flex items-center gap-1 text-sm text-amber-600 mt-2 hover:text-amber-700"
+                              className="flex items-center gap-1 text-sm text-minghuang-600 mt-2 hover:text-minghuang-700"
                             >
                               {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                               {isExpanded ? '收起' : '展开全文'}
@@ -623,42 +626,47 @@ export const ChatInterface: React.FC = () => {
                             <div className="relative">
                               <button
                                 onClick={() => setShowAdoptMenu(showAdoptMenu === item.id ? null : item.id)}
-                                className="flex items-center gap-1 text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors"
+                                className="flex items-center gap-1 text-xs px-2 py-1.5 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400 transition-colors"
                               >
                                 <Check size={12} />
                                 采纳
                               </button>
                               {showAdoptMenu === item.id && (
-                                <div className="absolute top-full left-0 mt-1 bg-white border border-wood-200 rounded-lg shadow-warm p-2 z-10 w-48">
-                                  <div className="mb-2">
-                                    <label className="text-xs text-wood-600 block mb-1">选择章节</label>
+                                <div className="absolute top-full left-0 mt-1 bg-white border border-ink-200 rounded-xl shadow-warm p-3 z-10 w-56">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-medium text-ink-800">采纳到章节</span>
+                                    <button onClick={() => setShowAdoptMenu(null)} className="text-ink-400 hover:text-ink-600">
+                                      <X size={14} />
+                                    </button>
+                                  </div>
+                                  <div className="mb-3">
                                     <select
                                       value={selectedChapterForAdopt || currentChapterId || ''}
                                       onChange={(e) => setSelectedChapterForAdopt(e.target.value)}
-                                      className="w-full input-field text-xs"
+                                      className="w-full input-field text-sm"
                                     >
                                       {bookChapters.map(chapter => (
                                         <option key={chapter.id} value={chapter.id}>{chapter.title}</option>
                                       ))}
                                     </select>
                                   </div>
-                                  <div className="flex gap-2 mb-2">
+                                  <div className="flex gap-2 mb-3">
                                     <button
                                       onClick={() => setAdoptMode('append')}
-                                      className={`flex-1 text-xs px-2 py-1 rounded ${adoptMode === 'append' ? 'bg-amber-100 text-amber-700' : 'bg-wood-100 text-wood-700'}`}
+                                      className={`flex-1 text-sm px-3 py-2 rounded-lg ${adoptMode === 'append' ? 'bg-minghuang-500 text-ink-950' : 'bg-ink-100 text-ink-600 hover:bg-ink-200'}`}
                                     >
                                       追加
                                     </button>
                                     <button
                                       onClick={() => setAdoptMode('overwrite')}
-                                      className={`flex-1 text-xs px-2 py-1 rounded ${adoptMode === 'overwrite' ? 'bg-amber-100 text-amber-700' : 'bg-wood-100 text-wood-700'}`}
+                                      className={`flex-1 text-sm px-3 py-2 rounded-lg ${adoptMode === 'overwrite' ? 'bg-minghuang-500 text-ink-950' : 'bg-ink-100 text-ink-600 hover:bg-ink-200'}`}
                                     >
                                       覆盖
                                     </button>
                                   </div>
                                   <button
                                     onClick={() => handleAdopt(item.content, item.id)}
-                                    className="w-full text-xs px-2 py-1 bg-amber-500 text-white rounded"
+                                    className="w-full text-sm px-4 py-2 bg-yexing-500 text-white rounded-lg hover:bg-yexing-400"
                                   >
                                     确认采纳
                                   </button>
@@ -667,7 +675,7 @@ export const ChatInterface: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleEditMessage(item)}
-                              className="flex items-center gap-1 text-xs px-2 py-1 bg-wood-100 text-wood-700 rounded hover:bg-wood-200 transition-colors"
+                              className="flex items-center gap-1 text-xs px-2 py-1.5 bg-ink-100 text-ink-600 rounded-lg hover:bg-ink-200 transition-colors"
                             >
                               <Edit2 size={12} />
                               编辑
@@ -675,7 +683,7 @@ export const ChatInterface: React.FC = () => {
                             <button
                               onClick={() => handleRegenerate(item)}
                               disabled={isGenerating}
-                              className="flex items-center gap-1 text-xs px-2 py-1 bg-wood-100 text-wood-700 rounded hover:bg-wood-200 transition-colors disabled:opacity-50"
+                              className="flex items-center gap-1 text-xs px-2 py-1.5 bg-ink-100 text-ink-600 rounded-lg hover:bg-ink-200 transition-colors disabled:opacity-50"
                             >
                               <RotateCcw size={12} />
                               重新生成
@@ -684,14 +692,14 @@ export const ChatInterface: React.FC = () => {
                         )}
                         <button
                           onClick={() => handleWithdraw(item)}
-                          className="flex items-center gap-1 text-xs px-2 py-1 text-red-500 hover:bg-red-50 rounded transition-colors"
+                          className="flex items-center gap-1 text-xs px-2 py-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 size={12} />
                           撤回
                         </button>
                         <button
                           onClick={() => handleCopyContent(item.content)}
-                          className="flex items-center gap-1 text-xs px-2 py-1 text-wood-500 hover:bg-wood-50 rounded transition-colors"
+                          className="flex items-center gap-1 text-xs px-2 py-1.5 text-ink-400 hover:bg-ink-50 rounded-lg transition-colors"
                         >
                           <Copy size={12} />
                           复制
@@ -702,16 +710,17 @@ export const ChatInterface: React.FC = () => {
                 );
               })}
               {isGenerating && (
-                <div className="flex gap-3 p-4 rounded-2xl bg-white border border-wood-200 shadow-paper">
-                  <div className="w-10 h-10 rounded-full bg-wood-200 flex items-center justify-center flex-shrink-0">
-                    <Sparkles size={18} className="text-wood-600 animate-pulse" />
+                <div className="flex gap-3 p-4 rounded-2xl bg-white border border-ink-100 shadow-paper">
+                  <div className="w-10 h-10 rounded-full bg-yexing-100 flex items-center justify-center flex-shrink-0">
+                    <Sparkles size={18} className="text-yexing-600 animate-pulse" />
                   </div>
                   <div className="flex-1">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-wood-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-2 h-2 bg-wood-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-2 h-2 bg-wood-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
+                    <div className="flex gap-2">
+                      <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </span>
+                    <span className="text-sm text-ink-500 ml-2">正在生成...</span>
                   </div>
                 </div>
               )}
@@ -723,26 +732,26 @@ export const ChatInterface: React.FC = () => {
 
       {/* Selected Text Actions */}
       {selectedText && (
-        <div className="border-t border-wood-200 bg-white/80 backdrop-blur p-3">
+        <div className="border-t border-ink-200 bg-white/80 backdrop-blur-md p-3">
           <div className="max-w-4xl mx-auto flex items-center gap-3">
-            <span className="text-sm text-wood-600">已选中文字</span>
+            <span className="text-sm text-ink-500">已选中文字</span>
             <button
               onClick={handleExpandSelection}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400 transition-colors"
             >
               <Plus size={14} />
               AI扩写
             </button>
             <button
               onClick={handleRewriteSelection}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-wood-100 text-wood-700 rounded-lg hover:bg-wood-200 transition-colors"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 bg-yexing-50 text-yexing-700 rounded-lg hover:bg-yexing-100 transition-colors"
             >
               <Pencil size={14} />
               AI改写
             </button>
             <button
               onClick={() => { setSelectedText(''); window.getSelection()?.removeAllRanges(); }}
-              className="flex items-center gap-1 text-sm px-3 py-1.5 text-wood-500 hover:bg-wood-100 rounded-lg transition-colors"
+              className="flex items-center gap-1 text-sm px-3 py-1.5 text-ink-400 hover:bg-ink-50 rounded-lg transition-colors"
             >
               <ArrowLeft size={14} />
               取消
@@ -752,11 +761,11 @@ export const ChatInterface: React.FC = () => {
       )}
 
       {/* Input Area */}
-      <div className="border-t border-wood-200 bg-white/80 backdrop-blur p-4">
+      <div className="border-t border-ink-200 bg-white/80 backdrop-blur-md p-4">
         <div className="max-w-4xl mx-auto space-y-3">
           {/* Upload Options */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <label className="flex items-center gap-1 px-3 py-1.5 text-sm text-wood-600 hover:bg-wood-100 rounded-lg transition-colors cursor-pointer">
+          <div className="flex items-center gap-3 flex-wrap">
+            <label className="flex items-center gap-1.5 px-3 py-2 text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
               <Upload size={16} />
               <span>上传文件</span>
               <input
@@ -767,7 +776,7 @@ export const ChatInterface: React.FC = () => {
                 accept=".txt,.md"
               />
             </label>
-            <label className="flex items-center gap-1 px-3 py-1.5 text-sm text-wood-600 hover:bg-wood-100 rounded-lg transition-colors cursor-pointer">
+            <label className="flex items-center gap-1.5 px-3 py-2 text-sm text-ink-600 hover:bg-ink-50 rounded-lg transition-colors cursor-pointer">
               <Image size={16} />
               <span>上传图片</span>
               <input
@@ -778,25 +787,26 @@ export const ChatInterface: React.FC = () => {
                 accept="image/*"
               />
             </label>
-            <div className="relative">
+            <div className="flex items-center gap-2 flex-1 max-w-xs">
               <input
                 type="text"
                 value={learnUrl}
                 onChange={(e) => setLearnUrl(e.target.value)}
                 placeholder="输入链接学习风格..."
-                className="input-field text-sm px-3 py-1.5 flex-1 max-w-xs"
+                className="input-field text-sm flex-1"
               />
               <button
                 onClick={handleLearnStyle}
                 disabled={!learnUrl.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                className="p-2 bg-minghuang-500 text-ink-950 rounded-lg hover:bg-minghuang-400 transition-colors disabled:opacity-50"
+                title="学习链接内容风格"
               >
                 <Link2 size={16} />
               </button>
             </div>
             <button
               onClick={handleQuickImprove}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm bg-yexing-500 text-white rounded-lg hover:bg-yexing-400 transition-colors"
             >
               <Sparkles size={16} />
               一键完善
@@ -807,11 +817,11 @@ export const ChatInterface: React.FC = () => {
           {fileUploads.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {fileUploads.map((file, index) => (
-                <div key={index} className="flex items-center gap-1 px-2 py-1 bg-wood-100 rounded-lg text-sm">
-                  <BookOpen size={14} className="text-wood-600" />
-                  <span className="text-wood-700 truncate max-w-32">{file.name}</span>
-                  <button onClick={() => setFileUploads(prev => prev.filter((_, i) => i !== index))}>
-                    <Trash2 size={14} className="text-red-500" />
+                <div key={index} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-ink-50 rounded-lg text-sm">
+                  <BookOpen size={14} className="text-ink-500" />
+                  <span className="text-ink-600 truncate max-w-32">{file.name}</span>
+                  <button onClick={() => setFileUploads(prev => prev.filter((_, i) => i !== index))} className="text-red-400 hover:text-red-500">
+                    <X size={14} />
                   </button>
                 </div>
               ))}
@@ -833,7 +843,7 @@ export const ChatInterface: React.FC = () => {
                   <option value="chapter">创作新章节</option>
                 </select>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-wood-600">字数:</span>
+                  <span className="text-sm text-ink-500">字数:</span>
                   <input
                     type="number"
                     value={wordCount}
@@ -844,7 +854,7 @@ export const ChatInterface: React.FC = () => {
                 </div>
               </div>
               {!apiSettings.apiKey && (
-                <div className="flex items-center gap-1 text-sm text-amber-600">
+                <div className="flex items-center gap-1.5 text-sm text-yexing-600">
                   <AlertCircle size={14} />
                   <span>请先配置API密钥</span>
                 </div>
@@ -859,7 +869,7 @@ export const ChatInterface: React.FC = () => {
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder="输入您的创作指令...\n\n例如：请写一段武侠小说的开篇，主角是一名隐退的杀手"
-                  className="w-full input-field resize-none focus:ring-2 focus:ring-amber-300"
+                  className="w-full input-field resize-none focus:ring-2 focus:ring-minghuang-300"
                   rows={1}
                   style={{ minHeight: '60px', maxHeight: '300px' }}
                   disabled={isGenerating}
@@ -868,7 +878,7 @@ export const ChatInterface: React.FC = () => {
               {isGenerating ? (
                 <button
                   onClick={handleStop}
-                  className="btn-wood flex items-center gap-2 h-fit px-6"
+                  className="btn-yexing flex items-center gap-2 px-6"
                 >
                   <Square size={18} fill="currentColor" />
                   暂停
@@ -877,7 +887,7 @@ export const ChatInterface: React.FC = () => {
                 <button
                   onClick={handleGenerate}
                   disabled={!userInput.trim() || !apiSettings.apiKey || !apiSettings.model}
-                  className="btn-amber flex items-center gap-2 h-fit px-6"
+                  className="btn-minghuang flex items-center gap-2 px-6"
                 >
                   <Send size={18} />
                   生成

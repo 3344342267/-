@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Menu, Settings, BookOpen, MessageSquare } from 'lucide-react';
 import { useStore } from './store';
@@ -18,20 +17,20 @@ const App: React.FC = () => {
   } = useStore();
 
   return (
-    <div className="h-screen flex flex-col bg-paper-50 overflow-hidden select-none">
-      <header className="h-14 bg-white/80 backdrop-blur border-b border-wood-200 flex items-center justify-between px-4 shrink-0">
+    <div className="h-screen flex flex-col bg-paper-100 overflow-hidden select-none">
+      <header className="h-14 bg-white/90 backdrop-blur-md border-b border-ink-200 flex items-center justify-between px-4 shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
-            className="p-2 hover:bg-wood-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-minghuang-100 rounded-lg transition-colors"
           >
-            <Menu size={20} className="text-wood-700" />
+            <Menu size={20} className="text-ink-700" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-warm">
+            <div className="w-8 h-8 bg-gradient-to-br from-minghuang-500 to-yexing-500 rounded-lg flex items-center justify-center shadow-warm">
               <span className="text-white font-bold">文</span>
             </div>
-            <span className="font-display font-semibold text-wood-900">小说助手</span>
+            <span className="font-display font-semibold text-ink-900">小说助手</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -42,8 +41,8 @@ const App: React.FC = () => {
             }}
             className={`p-2 rounded-lg transition-colors ${
               rightSidebarOpen && activeRightTab === 'reference'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-wood-600 hover:bg-wood-100'
+                ? 'bg-minghuang-100 text-minghuang-700'
+                : 'text-ink-600 hover:bg-minghuang-100'
             }`}
             title="风格参考"
           >
@@ -56,8 +55,8 @@ const App: React.FC = () => {
             }}
             className={`p-2 rounded-lg transition-colors ${
               rightSidebarOpen && activeRightTab === 'config'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-wood-600 hover:bg-wood-100'
+                ? 'bg-minghuang-100 text-minghuang-700'
+                : 'text-ink-600 hover:bg-minghuang-100'
             }`}
             title="AI配置"
           >
@@ -70,19 +69,19 @@ const App: React.FC = () => {
         <aside
           className={`${
             leftSidebarOpen ? 'w-80' : 'w-0'
-          } border-r border-wood-200 transition-all duration-300 ease-out overflow-hidden bg-paper-50 shrink-0`}
+          } border-r border-ink-200 transition-all duration-300 ease-out overflow-hidden bg-paper-50 shrink-0`}
         >
           {leftSidebarOpen && <BookSidebar />}
         </aside>
 
-        <main className="flex-1 flex flex-col overflow-hidden bg-paper-50 min-w-0">
+        <main className="flex-1 flex flex-col overflow-hidden bg-paper-100 min-w-0">
           <ChatInterface />
         </main>
 
         <aside
           className={`${
             rightSidebarOpen ? 'w-96' : 'w-0'
-          } border-l border-wood-200 transition-all duration-300 ease-out overflow-hidden bg-paper-50 shrink-0`}
+          } border-l border-ink-200 transition-all duration-300 ease-out overflow-hidden bg-paper-50 shrink-0`}
         >
           {rightSidebarOpen && (
             activeRightTab === 'config' ? <ConfigPanel /> : <ReferencePanel />
