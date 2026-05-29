@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+Pro:wght@400;600&display=swap');
+
+:root {
+  font-family: 'Source Serif Pro', Georgia, serif;
+  line-height: 1.7;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fdf8f3;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(241, 215, 188, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(252, 211, 77, 0.2) 0px, transparent 50%);
+  min-height: 100vh;
+}
+
+.paper-texture {
+  background-color: #fefdfa;
+  background-image: 
+    linear-gradient(rgba(139, 115, 85, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 115, 85, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.btn-wood {
+  @apply bg-wood-600 hover:bg-wood-500 text-white transition-all duration-200 rounded-xl px-4 py-2 shadow-warm;
+}
+
+.btn-amber {
+  @apply bg-amber-500 hover:bg-amber-400 text-white transition-all duration-200 rounded-xl px-4 py-2 shadow-warm;
+}
+
+.btn-ghost {
+  @apply hover:bg-wood-100 text-wood-800 transition-all duration-200 rounded-xl px-4 py-2;
+}
+
+.input-field {
+  @apply w-full rounded-xl border-2 border-wood-200 bg-paper-50 px-4 py-3 text-wood-900 placeholder-wood-400 focus:border-amber-500 focus:outline-none transition-all duration-200;
+}
+
+.card {
+  @apply bg-paper-50 rounded-2xl shadow-paper border border-wood-100;
+}
