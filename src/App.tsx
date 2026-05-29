@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Menu, Settings } from 'lucide-react';
+import { Menu, Settings, BookOpen, MessageSquare } from 'lucide-react';
 import { useStore } from './store';
-import { SettingsPanel } from './components/SettingsPanel';
+import { ConfigPanel } from './components/ConfigPanel';
 import { BookSidebar } from './components/BookSidebar';
-import { Editor } from './components/Editor';
+import { ChatInterface } from './components/ChatInterface';
 import { ReferencePanel } from './components/ReferencePanel';
 
 const App: React.FC = () => {
@@ -37,19 +37,6 @@ const App: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
-              setActiveRightTab('settings');
-              setRightSidebarOpen(!rightSidebarOpen);
-            }}
-            className={`p-2 rounded-lg transition-colors ${
-              rightSidebarOpen && activeRightTab === 'settings'
-                ? 'bg-amber-100 text-amber-700'
-                : 'text-wood-600 hover:bg-wood-100'
-            }`}
-          >
-            <Settings size={20} />
-          </button>
-          <button
-            onClick={() => {
               setActiveRightTab('reference');
               setRightSidebarOpen(!rightSidebarOpen);
             }}
@@ -58,10 +45,23 @@ const App: React.FC = () => {
                 ? 'bg-amber-100 text-amber-700'
                 : 'text-wood-600 hover:bg-wood-100'
             }`}
+            title="风格参考"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+            <BookOpen size={20} />
+          </button>
+          <button
+            onClick={() => {
+              setActiveRightTab('config');
+              setRightSidebarOpen(!rightSidebarOpen);
+            }}
+            className={`p-2 rounded-lg transition-colors ${
+              rightSidebarOpen && activeRightTab === 'config'
+                ? 'bg-amber-100 text-amber-700'
+                : 'text-wood-600 hover:bg-wood-100'
+            }`}
+            title="AI配置"
+          >
+            <Settings size={20} />
           </button>
         </div>
       </header>
@@ -76,7 +76,7 @@ const App: React.FC = () => {
         </aside>
 
         <main className="flex-1 flex flex-col overflow-hidden bg-paper-50 min-w-0">
-          <Editor />
+          <ChatInterface />
         </main>
 
         <aside
@@ -85,9 +85,7 @@ const App: React.FC = () => {
           } border-l border-wood-200 transition-all duration-300 ease-out overflow-hidden bg-paper-50 shrink-0`}
         >
           {rightSidebarOpen && (
-            <>
-              {activeRightTab === 'settings' ? <SettingsPanel /> : <ReferencePanel />}
-            </>
+            activeRightTab === 'config' ? <ConfigPanel /> : <ReferencePanel />
           )}
         </aside>
       </div>

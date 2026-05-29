@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Settings, X, ChevronDown, ChevronUp, Check, AlertCircle, Upload, Image } from 'lucide-react';
 import { useStore } from '../store';
@@ -13,8 +12,8 @@ const PROVIDERS = [
 
 export const SettingsPanel: React.FC = () => {
   const {
-    settings,
-    setSettings,
+    apiSettings,
+    setApiSettings,
     setRightSidebarOpen,
     saveToStorage,
   } = useStore();
@@ -26,7 +25,7 @@ export const SettingsPanel: React.FC = () => {
 
   const handleProviderChange = (provider: string) => {
     const providerConfig = PROVIDERS.find(p => p.value === provider);
-    setSettings({
+    setApiSettings({
       provider: provider as any,
       apiUrl: providerConfig?.defaultUrl || '',
       model: '',
@@ -35,12 +34,12 @@ export const SettingsPanel: React.FC = () => {
   };
 
   const handleGetModels = async () => {
-    if (!settings.apiKey) return;
+    if (!apiSettings.apiKey) return;
     
     setIsLoadingModels(true);
     try {
-      const models = await getModelList(settings);
-      setSettings({ models });
+      const models = await getModelList(apiSettings);
+      setApiSettings({ models });
     } catch (error) {
       console.error('Failed to get models:', error);
     } finally {
@@ -49,12 +48,12 @@ export const SettingsPanel: React.FC = () => {
   };
 
   const handleTestConnection = async () => {
-    if (!settings.apiKey || !settings.model) return;
+    if (!apiSettings.apiKey || !apiSettings.model) return;
     
     setIsTesting(true);
     setTestResult(null);
     try {
-      const success = await testConnection(settings);
+      const success = await testConnection(apiSettings);
       setTestResult(success ? 'success' : 'error');
     } catch (error) {
       setTestResult('error');
@@ -64,22 +63,9 @@ export const SettingsPanel: React.FC = () => {
   };
 
   const handleSelectModel = (model: string) => {
-    setSettings({ model });
+    setApiSettings({ model });
     setShowModelDropdown(false);
     saveToStorage();
-  };
-
-  const handleBackgroundImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      setSettings({ backgroundImage: content });
-      saveToStorage();
-    };
-    reader.readAsDataURL(file);
   };
 
   return (
@@ -98,14 +84,13 @@ export const SettingsPanel: React.FC = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
-        {/* API Settings */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-wood-700 uppercase tracking-wide">API 配置</h3>
           
           <div>
             <label className="block text-sm text-wood-600 mb-2">模型提供商</label>
             <select
-              value={settings.provider}
+              value={apiSettings.provider}
               onChange={(e) => handleProviderChange(e.target.value)}
               className="w-full input-field"
             >
@@ -119,8 +104,8 @@ export const SettingsPanel: React.FC = () => {
             <label className="block text-sm text-wood-600 mb-2">API 地址</label>
             <input
               type="text"
-              value={settings.apiUrl}
-              onChange={(e) => setSettings({ apiUrl: e.target.value })}
+              value={apiSettings.apiUrl}
+              onChange={(e) => setApiSettings({ apiUrl: e.target.value })}
               placeholder="https://api.example.com/v1"
               className="w-full input-field"
             />
@@ -130,8 +115,8 @@ export const SettingsPanel: React.FC = () => {
             <label className="block text-sm text-wood-600 mb-2">API 密钥</label>
             <input
               type="password"
-              value={settings.apiKey}
-              onChange={(e) => setSettings({ apiKey: e.target.value })}
+              value={apiSettings.apiKey}
+              onChange={(e) => setApiSettings({ apiKey: e.target.value })}
               placeholder="sk-..."
               className="w-full input-field"
             />
@@ -144,15 +129,15 @@ export const SettingsPanel: React.FC = () => {
                 className="w-full input-field flex items-center justify-between cursor-pointer"
                 onClick={() => setShowModelDropdown(!showModelDropdown)}
               >
-                <span className={settings.model ? 'text-wood-900' : 'text-wood-400'}>
-                  {settings.model || '选择或获取模型'}
+                <span className={apiSettings.model ? 'text-wood-900' : 'text-wood-400'}>
+                  {apiSettings.model || '选择或获取模型'}
                 </span>
                 {showModelDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </div>
               
-              {showModelDropdown && settings.models.length > 0 && (
+              {showModelDropdown && apiSettings.models.length > 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-wood-200 rounded-xl shadow-warm max-h-60 overflow-y-auto">
-                  {settings.models.map(model => (
+                  {apiSettings.models.map(model => (
                     <button
                       key={model}
                       onClick={() => handleSelectModel(model)}
@@ -169,14 +154,14 @@ export const SettingsPanel: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={handleGetModels}
-              disabled={isLoadingModels || !settings.apiKey}
+              disabled={isLoadingModels || !apiSettings.apiKey}
               className="flex-1 btn-wood"
             >
               {isLoadingModels ? '获取中...' : '获取模型'}
             </button>
             <button
               onClick={handleTestConnection}
-              disabled={isTesting || !settings.apiKey || !settings.model}
+              disabled={isTesting || !apiSettings.apiKey || !apiSettings.model}
               className="flex-1 btn-amber"
             >
               {isTesting ? '测试中...' : '测试连接'}
@@ -191,45 +176,6 @@ export const SettingsPanel: React.FC = () => {
               <span className="text-sm">
                 {testResult === 'success' ? '连接成功！' : '连接失败，请检查配置'}
               </span>
-            </div>
-          )}
-        </div>
-
-        <hr className="border-wood-200" />
-
-        {/* Theme Settings */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-wood-700 uppercase tracking-wide flex items-center gap-2">
-            <Image size={16} />
-            主题设置
-          </h3>
-
-          <div>
-            <label className="block text-sm text-wood-600 mb-2">自定义背景</label>
-            <label className="w-full input-field flex items-center justify-center gap-2 cursor-pointer hover:bg-wood-100 transition-colors">
-              <Upload size={20} />
-              <span>选择背景图片</span>
-              <input
-                type="file"
-                onChange={handleBackgroundImageUpload}
-                className="hidden"
-                accept=".png,.jpg,.jpeg,.webp"
-              />
-            </label>
-          </div>
-
-          {settings.backgroundImage && (
-            <div>
-              <div className="w-full h-32 bg-cover bg-center rounded-xl border border-wood-200" style={{ backgroundImage: `url(${settings.backgroundImage})` }} />
-              <button
-                onClick={() => {
-                  setSettings({ backgroundImage: undefined });
-                  saveToStorage();
-                }}
-                className="mt-2 text-sm text-red-500 hover:text-red-600"
-              >
-                移除背景图片
-              </button>
             </div>
           )}
         </div>

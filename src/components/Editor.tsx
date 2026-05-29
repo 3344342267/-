@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Square, RotateCcw, Download, Copy, History, BookMarked, MessageSquare, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '../store';
 import { streamCompletion } from '../utils/api';
 import { buildSystemPrompt, buildContinuePrompt, buildOutlinePrompt, buildChapterPrompt } from '../utils/prompts';
-import { HistoryItem, Outline, ChapterPlan } from '../store/types';
+import { HistoryItem, Outline, ChapterPlan, Preset } from '../store/types';
 
 type ViewMode = 'edit' | 'outline' | 'history';
 
@@ -16,6 +15,9 @@ export const Editor: React.FC = () => {
     currentChapterId,
     outlines,
     history,
+    apiSettings,
+    modelConfigs,
+    presets,
     settings,
     references,
     isGenerating,
@@ -44,6 +46,8 @@ export const Editor: React.FC = () => {
   const currentBook = books.find(b => b.id === currentBookId);
   const currentChapter = chapters.find(c => c.id === currentChapterId);
   const currentOutline = outlines.find(o => o.bookId === currentBookId);
+  const currentConfig = modelConfigs.find(c => c.id === settings.activeModelConfigId);
+  const currentPreset = presets.find(p => p.id === currentConfig?.presetId);
   const chapterHistory = history.filter(h => h.chapterId === currentChapterId);
   const bookChapters = chapters.filter(c => c.bookId === currentBookId).sort((a, b) => a.order - b.order);
 
@@ -90,7 +94,7 @@ export const Editor: React.FC = () => {
   };
 
   const handleGenerate = async (mode: 'continue' | 'new' | 'outline' | 'chapter' = 'continue', targetChapterPlan?: ChapterPlan) => {
-    if (!settings.apiKey || !settings.model || isGenerating) return;
+    if (!apiSettings.apiKey || !apiSettings.model || isGenerating) return;
 
     if (mode !== 'outline' && mode !== 'chapter' && !currentChapterId) {
       alert('请先选择或创建一个章节');
@@ -101,7 +105,7 @@ export const Editor: React.FC = () => {
     const controller = new AbortController();
     setAbortController(controller);
 
-    const systemPrompt = buildSystemPrompt(references, wordCount ? parseInt(wordCount) : undefined);
+    const systemPrompt = buildSystemPrompt(references, currentPreset || null, wordCount ? parseInt(wordCount) : undefined);
     let messages: { role: 'system' | 'user' | 'assistant'; content: string }[] = [
       { role: 'system', content: systemPrompt },
     ];
@@ -157,7 +161,7 @@ export const Editor: React.FC = () => {
 
     try {
       await streamCompletion(
-        settings,
+        apiSettings,
         messages,
         (chunk, thinking) => {
           if (mode === 'outline') {
@@ -442,7 +446,7 @@ export const Editor: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => handleGenerate(userInput ? 'new' : 'continue')}
-                      disabled={!settings.apiKey || !settings.model || !currentChapter}
+                      disabled={!apiSettings.apiKey || !apiSettings.model || !currentChapter}
                       className="btn-amber flex items-center gap-2"
                     >
                       <Sparkles size={18} />

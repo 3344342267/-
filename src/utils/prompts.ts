@@ -1,11 +1,17 @@
 
-import { Reference } from '../store/types';
+import { Reference, Preset } from '../store/types';
 
 export function buildSystemPrompt(
   references: Reference[],
+  preset: Preset | null,
   wordLimit?: number
 ): string {
-  let prompt = `你是一位专业的小说写作助手，帮助用户创作小说内容。
+  let prompt = '';
+
+  if (preset && preset.content) {
+    prompt += preset.content;
+  } else {
+    prompt = `你是一位专业的小说写作助手，帮助用户创作小说内容。
 
 写作要求：
 - 保持自然流畅的文笔，避免生硬和AI感
@@ -13,6 +19,7 @@ export function buildSystemPrompt(
 - 保持剧情连贯性
 - 语言风格要适合小说阅读
 - 避免重复和冗余的描述`;
+  }
 
   if (wordLimit) {
     prompt += `\n\n本次生成的字数控制在约 ${wordLimit} 字左右。`;
@@ -103,4 +110,24 @@ export function buildChapterPrompt(
   prompt += `\n请根据以上信息创作完整的章节内容。`;
   
   return prompt;
+}
+
+export function buildStyleLearningPrompt(
+  text: string
+): string {
+  return `请分析以下文本的写作风格特点：
+
+--- 参考文本 ---
+${text.slice(0, 5000)}
+${text.length > 5000 ? '\n...（内容已截断）' : ''}
+
+--- 分析要求 ---
+请详细分析这段文本的：
+1. 文笔特点和常用措辞
+2. 段落结构和叙事节奏
+3. 氛围营造方式
+4. 修辞手法运用
+5. 人物描写风格
+
+请提供一份详细的风格分析报告，以便我后续模仿这种风格进行创作。`;
 }

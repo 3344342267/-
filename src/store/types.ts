@@ -42,20 +42,50 @@ export interface HistoryItem {
   createdAt: string;
 }
 
+export type ApiProvider = 'openai' | 'openai-responses' | 'claude' | 'gemini' | 'custom';
+
 export interface ApiSettings {
-  provider: 'openai' | 'openai-responses' | 'claude' | 'gemini';
+  provider: ApiProvider;
   apiUrl: string;
   apiKey: string;
   model: string;
   models: string[];
 }
 
+export interface ModelConfig {
+  id: string;
+  name: string;
+  provider: ApiProvider;
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+  presetId: string;
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+  maxTokens: number;
+  minTokens: number;
+  maxContextTokens: number;
+  isActive: boolean;
+}
+
+export interface Preset {
+  id: string;
+  name: string;
+  description: string;
+  content: string;
+  isBuiltIn: boolean;
+  createdAt: string;
+}
+
 export interface ThemeSettings {
   backgroundImage?: string;
 }
 
-export interface Settings extends ApiSettings, ThemeSettings {
+export interface Settings {
   id: string;
+  activeModelConfigId: string;
 }
 
 export type ReferenceType = 'text' | 'file' | 'url' | 'book';
@@ -69,28 +99,40 @@ export interface Reference {
   createdAt: string;
 }
 
+export interface BookSource {
+  id: string;
+  name: string;
+  url: string;
+  enabled: boolean;
+}
+
+export interface BookInfo {
+  id: string;
+  name: string;
+  author: string;
+  cover: string;
+  desc: string;
+  bookUrl: string;
+}
+
 export interface AppState {
-  // Books
   books: Book[];
   currentBookId: string | null;
-  // Chapters
   chapters: Chapter[];
   currentChapterId: string | null;
-  // Outlines
   outlines: Outline[];
-  // History
   history: HistoryItem[];
-  // Settings
   settings: Settings;
-  // Style References
+  apiSettings: ApiSettings;
+  modelConfigs: ModelConfig[];
+  presets: Preset[];
   references: Reference[];
-  // UI State
+  bookSources: BookSource[];
   leftSidebarOpen: boolean;
   rightSidebarOpen: boolean;
-  activeRightTab: 'settings' | 'reference';
+  activeRightTab: 'config' | 'reference';
   isGenerating: boolean;
   abortController: AbortController | null;
-  // Actions
   setBooks: (books: Book[]) => void;
   addBook: (book: Book) => void;
   updateBook: (id: string, updates: Partial<Book>) => void;
@@ -107,14 +149,29 @@ export interface AppState {
   setHistory: (history: HistoryItem[]) => void;
   addHistoryItem: (item: HistoryItem) => void;
   updateHistoryItem: (id: string, updates: Partial<HistoryItem>) => void;
+  removeHistoryItem: (id: string) => void;
   clearHistory: (chapterId: string) => void;
   setSettings: (settings: Partial<Settings>) => void;
+  setApiSettings: (settings: Partial<ApiSettings>) => void;
+  setModelConfigs: (configs: ModelConfig[]) => void;
+  addModelConfig: (config: ModelConfig) => void;
+  updateModelConfig: (id: string, updates: Partial<ModelConfig>) => void;
+  deleteModelConfig: (id: string) => void;
+  setActiveModelConfig: (id: string) => void;
+  setPresets: (presets: Preset[]) => void;
+  addPreset: (preset: Preset) => void;
+  updatePreset: (id: string, updates: Partial<Preset>) => void;
+  deletePreset: (id: string) => void;
   setReferences: (references: Reference[]) => void;
   addReference: (reference: Reference) => void;
   removeReference: (id: string) => void;
+  setBookSources: (sources: BookSource[]) => void;
+  addBookSource: (source: BookSource) => void;
+  updateBookSource: (id: string, updates: Partial<BookSource>) => void;
+  deleteBookSource: (id: string) => void;
   setLeftSidebarOpen: (open: boolean) => void;
   setRightSidebarOpen: (open: boolean) => void;
-  setActiveRightTab: (tab: 'settings' | 'reference') => void;
+  setActiveRightTab: (tab: 'config' | 'reference') => void;
   setIsGenerating: (generating: boolean) => void;
   setAbortController: (controller: AbortController | null) => void;
   loadFromStorage: () => void;
