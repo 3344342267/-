@@ -13,6 +13,7 @@ import {
   BookSource,
   ApiProvider
 } from './types';
+import { BUILT_IN_PRESETS } from '../utils/prompts';
 
 const STORAGE_KEY = 'novel-ai-writer';
 
@@ -29,72 +30,7 @@ const DEFAULT_SETTINGS = {
   activeModelConfigId: '',
 };
 
-const DEFAULT_PRESETS: Preset[] = [
-  {
-    id: 'preset-none',
-    name: '无预设',
-    description: '不注入任何系统提示词，完全由用户指令驱动',
-    content: '',
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'preset-narrative',
-    name: '灵犀·叙事引擎',
-    description: '深度叙事美学框架，注重文字密度、风格精准性与情节节奏',
-    content: `你是一位专业的小说写作助手，擅长创作高质量的小说内容。
-
-写作要求：
-- 保持自然流畅的文笔，避免生硬和AI感
-- 注意人物性格的一致性
-- 保持剧情连贯性
-- 语言风格要适合小说阅读
-- 注意文字密度和情节节奏`,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'preset-immersive',
-    name: '深潜·感官沉浸',
-    description: '感官优先叙事，强调细节密度与情感浓度，适合精品短篇与高潮场景',
-    content: `你是一位擅长沉浸式描写的小说作家。
-
-写作特点：
-- 注重感官细节描写（视觉、听觉、嗅觉、触觉、味觉）
-- 营造强烈的情感氛围
-- 细腻刻画人物心理活动
-- 适合描写高潮场景和情感冲突`,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'preset-structure',
-    name: '经纬·情节架构',
-    description: '注重叙事逻辑与场景结构，适合长篇章节推进和复杂剧情编排',
-    content: `你是一位擅长构建复杂情节的小说作家。
-
-写作特点：
-- 注重叙事逻辑和情节结构
-- 合理安排章节节奏
-- 构建引人入胜的情节线
-- 适合长篇小说创作和复杂剧情编排`,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'preset-minimal',
-    name: '素笔·极简模式',
-    description: '最少限制，AI自由发挥，适合快速探索和实验性创作',
-    content: `你是一位富有创造力的写作者。
-
-写作特点：
-- 自由发挥，不受太多限制
-- 鼓励实验性和创新性写作
-- 快速探索不同的写作风格和想法`,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-  },
-];
+const DEFAULT_PRESETS: Preset[] = BUILT_IN_PRESETS as Preset[];
 
 const DEFAULT_BOOK_SOURCES: BookSource[] = [
   {
