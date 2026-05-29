@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+Pro:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+Pro:wght@400;600&display=swap');
 
 :root {
   font-family: 'Source Serif Pro', Georgia, serif;
@@ -79,7 +79,7 @@ body {
 }
 
 .markdown-content {
-  @apply prose prose-lg max-w-none;
+  max-width: none;
 }
 
 .markdown-content p {

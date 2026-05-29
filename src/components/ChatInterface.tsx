@@ -719,7 +719,7 @@ export const ChatInterface: React.FC = () => {
                       <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                       <span className="w-2 h-2 bg-minghuang-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </span>
+                    </div>
                     <span className="text-sm text-ink-500 ml-2">正在生成...</span>
                   </div>
                 </div>
