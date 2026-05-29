@@ -2,12 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+Pro:wght@400;600&display=swap');
 
 :root {
-  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-  line-height: 1.6;
+  font-family: 'Source Serif Pro', Georgia, serif;
+  line-height: 1.7;
   font-weight: 400;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,250 +22,46 @@
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background-color: #fdf8f3;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(241, 215, 188, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(252, 211, 77, 0.2) 0px, transparent 50%);
   min-height: 100vh;
-  overflow: hidden;
 }
 
-/* 动态背景动画 */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(251, 146, 60, 0.06) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-  animation: floatBackground 20s ease-in-out infinite;
+.paper-texture {
+  background-color: #fefdfa;
+  background-image: 
+    linear-gradient(rgba(139, 115, 85, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 115, 85, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-@keyframes floatBackground {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  33% { transform: translateY(-10px) translateX(5px); }
-  66% { transform: translateY(5px) translateX(-5px); }
-}
-
-/* 玻璃拟态效果 */
-.glass {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.glass-light {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* 霓虹渐变边框 */
-.neon-border {
-  position: relative;
-}
-
-.neon-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(135deg, #38bdf8, #a855f7, #fb923c, #38bdf8);
-  border-radius: inherit;
-  z-index: -1;
-  animation: gradientRotate 4s linear infinite;
-  background-size: 300% 300%;
-}
-
-@keyframes gradientRotate {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* 发光效果 */
-.glow {
-  box-shadow: 
-    0 0 20px rgba(56, 189, 248, 0.3),
-    0 0 40px rgba(168, 85, 247, 0.2),
-    0 0 60px rgba(251, 146, 60, 0.1);
-}
-
-.glow-text {
-  text-shadow: 
-    0 0 10px rgba(56, 189, 248, 0.5),
-    0 0 20px rgba(168, 85, 247, 0.3);
-}
-
-/* 滚动条美化 */
 .scrollbar-hide::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.scrollbar-hide::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-}
-
-.scrollbar-hide::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #38bdf8, #a855f7);
-  border-radius: 3px;
-  opacity: 0.5;
-  transition: opacity 0.3s;
-}
-
-.scrollbar-hide::-webkit-scrollbar-thumb:hover {
-  opacity: 1;
+  display: none;
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.5) transparent;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* 按钮样式 */
-.btn-primary {
-  @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
-  background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
-  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+.btn-wood {
+  @apply bg-wood-600 hover:bg-wood-500 text-white transition-all duration-200 rounded-xl px-4 py-2 shadow-warm;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+.btn-amber {
+  @apply bg-amber-500 hover:bg-amber-400 text-white transition-all duration-200 rounded-xl px-4 py-2 shadow-warm;
 }
 
-.btn-secondary {
-  @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+.btn-ghost {
+  @apply hover:bg-wood-100 text-wood-800 transition-all duration-200 rounded-xl px-4 py-2;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(56, 189, 248, 0.5);
+.input-field {
+  @apply w-full rounded-xl border-2 border-wood-200 bg-paper-50 px-4 py-3 text-wood-900 placeholder-wood-400 focus:border-amber-500 focus:outline-none transition-all duration-200;
 }
 
-/* 输入框样式 */
-.input-enhanced {
-  @apply w-full px-4 py-3 rounded-xl text-slate-100 placeholder-slate-500;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.input-enhanced:focus {
-  outline: none;
-  border-color: rgba(56, 189, 248, 0.6);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* 卡片样式 */
-.card-enhanced {
-  @apply rounded-2xl p-6;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-/* 动画类 */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 2s ease-in-out infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
-  }
-  50% { 
-    box-shadow: 0 0 40px rgba(168, 85, 247, 0.5), 0 0 60px rgba(56, 189, 248, 0.3);
-  }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 消息气泡动画 */
-.message-appear {
-  animation: messageAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes messageAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 打字光标动画 */
-.typing-cursor {
-  display: inline-block;
-  width: 3px;
-  height: 1.2em;
-  background: linear-gradient(180deg, #38bdf8, #a855f7);
-  margin-left: 2px;
-  animation: blink 1s step-end infinite;
-  vertical-align: -3px;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* 渐变文字 */
-.gradient-text {
-  background: linear-gradient(135deg, #38bdf8, #a855f7, #fb923c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* 悬停效果 */
-.hover-lift {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px);
-}
-
-/* 选择文本颜色 */
-::selection {
-  background: rgba(56, 189, 248, 0.3);
-  color: #fff;
+.card {
+  @apply bg-paper-50 rounded-2xl shadow-paper border border-wood-100;
 }
