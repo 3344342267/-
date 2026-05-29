@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Romans实验室</title>
+<meta name="description" content="。。" />
+<meta name="keywords" content="" />
+<meta itemprop="image" content="https://miaoda-screenshot-img.cdn.bcebos.com/v1/preview_screen/app-bxhx3fg65ukh/app-bxhx3fg65ukh_1780019674252_b41a.png" />
+
+<!-- Open Graph 协议 -->
+<meta property="og:title" content="Romans实验室" />
+<meta property="og:description" content="。。" />
+<meta property="og:image" content="https://miaoda-screenshot-img.cdn.bcebos.com/v1/preview_screen/app-bxhx3fg65ukh/app-bxhx3fg65ukh_1780019674252_b41a.png" />
+<meta property="og:url" content="app-bxhx3fg65ukh.appmiaoda.com/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Romans实验室" />
+<meta property="og:locale" content="zh_CN" />
+
+<!-- Twitter Card 协议 -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Romans实验室" />
+<meta name="twitter:description" content="。。" />
+<meta name="twitter:image" content="https://miaoda-screenshot-img.cdn.bcebos.com/v1/preview_screen/app-bxhx3fg65ukh/app-bxhx3fg65ukh_1780019674252_b41a.png" />
+<meta name="twitter:url" content="app-bxhx3fg65ukh.appmiaoda.com/" />
+<meta name="twitter:site" content="@MiaodaAI" />
+
+<link
+  rel="icon"
+  href="https://miaoda-screenshot-img.cdn.bcebos.com/v1/preview_screen/app-bxhx3fg65ukh/app-bxhx3fg65ukh_1780019674252_b41a.png"
+/>
+
+
+    
+    <meta name="author" content="miaoda"/>
+    <meta name="keywords" content="写作计划,阅读管理,作家工具,创作助手,学习系统" />
+
+    <meta property="og:title" content="智能写作助手 - 专为作家定制的学习与创作平台" />
+    <meta property="og:description" content="为作家量身定制的智能学习、阅读与写作计划系统，帮助您提升创作效率" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://resource-static.cdn.bcebos.com/portal/online/1.0.0/static/portal/home.Bm1Ji8MZ.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://resource-static.cdn.bcebos.com/portal/online/1.0.0/static/portal/home.Bm1Ji8MZ.png" />
+    <script type="module" crossorigin src="https://op-sourcecode.cdn.bcebos.com/source_code/projects/conv-bxhx3fg65ukg_1780019657186/assets/index-jhm8E4Eu.js"></script>
+    <link rel="stylesheet" crossorigin href="https://op-sourcecode.cdn.bcebos.com/source_code/projects/conv-bxhx3fg65ukg_1780019657186/assets/index-DQAT_RdN.css">
+    <script>
+              (function () {
+                const redirect = new URLSearchParams(location.search).get('redirect');
+                if (redirect && redirect !== location.pathname) {
+                  history.replaceState(null, '', redirect);
+                }
+              })();
+            </script>
+    <link rel="stylesheet" id="fonts-code" href="https://miaoda-font.cdn.bcebos.com/static/font_v1/fonts-code.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script id="md-click">
+              window.mdClick = e => {
+                const target = e.target;
+                const {href, target: linkTarget} = target.dataset;
+                const appType = 'web';
+                const isBlank = linkTarget === '_blank';
+
+                if (!href) return;
+
+                e.stopPropagation();
+                e.preventDefault();
+
+                // 外部链接或新窗口打开
+                if (isBlank || href.startsWith('http')) {
+                  let finalHref = href;
+                  if (appType === 'miniapp' && !href.startsWith('http')) {
+                    finalHref = window.location.href.split('#')[0] + '#/' + href;
+                  }
+                  window.open(finalHref, linkTarget || '_self');
+                  return;
+                }
+
+                // 内部路由跳转
+                const finalHref = href.startsWith('/') ? href : '/' + href;
+                if (appType === 'miniapp') {
+                  window.location.hash = finalHref;
+                  window.dispatchEvent(new HashChangeEvent('hashchange'));
+                } else {
+                  window.history.pushState({}, '', finalHref);
+                  window.dispatchEvent(new Event('popstate'));
+                }
+              };
+              document.addEventListener('click', window.mdClick, true);
+            </script>
+    <script id="iframe-onerror-catcher">
+              const observer = new PerformanceObserver((list) => {
+                list.getEntries().forEach((entry) => {
+                  if (entry.initiatorType === 'script' && entry.responseStatus >= 400) {
+                    window.parent.postMessage({
+                      type: "RESOURCE_LOAD_ERROR",
+                      name: entry.name,
+                      status: entry.responseStatus
+                    }, "*");
+                    console.warn('[iframe-error] Resource failed:', entry.name, entry.responseStatus);
+                  }
+                });
+              });
+              observer.observe({ type: 'resource', buffered: true });
+            </script>
+  <script>
+  (function () {
+    const script = document.createElement('script');
+    script.src = 'https://resource-static.cdn.bcebos.com/runtime-inject/domain-static/online/1.0.66.1/static/miaoda-external.js?tm=' + new Date().getTime();
+    script.async = true;
+    script.onload = function () {
+      window.miaoda.init({
+        appId: 'app-bxhx3fg65ukh',
+        type: 'WEB',
+        share: {
+            title: "小说创作助手应用",
+            desc: "学习小说风格，生成全新原创剧情，为写作爱好者提供智能创作伙伴。",
+            image: "https://miaoda-screenshot-img.cdn.bcebos.com/v1/preview_screen/app-bxhx3fg65ukh/app-bxhx3fg65ukh_1780019674252_b41a.png"
+        }
+      });
+    };
+    document.head.appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
